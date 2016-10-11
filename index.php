@@ -13,7 +13,7 @@
  **/
 
 // Turn off all error reporting
-error_reporting(0);
+//error_reporting(0);
 
 /******************** Config ********************/
 // All configuration is now done in config.json.
@@ -114,7 +114,8 @@ if($pieces[0] != '') {
 } else {
 	throw new Exception("No collection specified.", 404);
 }
-if(!property_exists($api, $api_noun)){
+if(!property_exists($api, $api_noun) && $api_noun!='login'
+        && $api_noun!='logout'){
 	throw new Exception("Collection $api_noun does not exist.", 404);
 }
 if(isset($pieces[1])) {
@@ -129,7 +130,27 @@ $http_method = $_SERVER['REQUEST_METHOD'];
 
 
 /************************ Routing ************************/
-if(function_exists($http_method)) {
+if ($http_method=='POST' && $api_noun == 'login') {
+    $users = GET('users');
+    $password = NULL;
+    //Find user by username
+    foreach ($users as $u) {
+        if ($u->name == $_POST['name']) {
+            $password = $u->password;
+            break;
+        }
+    }
+    if ($password!=NULL && $password==$_POST['password']) {
+        //login was successful
+        session_start();
+        $_SESSION['name'] = $_POST['name'];
+        $data = 'Login successful';
+    } else { //unsuccessful
+        throw new Exception("Username and password do not match.", 403);
+    }
+} else if ($http_method=='POST' && $api_noun == 'logout') {
+
+}else if(function_exists($http_method)) { //Handle all other requests
 	$data = $http_method($api_noun);
 } else {
 	throw new Exception("Method Not Allowed (129)", 405);
