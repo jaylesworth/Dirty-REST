@@ -3,6 +3,12 @@
     "apiBase":"/api/",
     "storage":"storage/"
   },
+
+  "users":{
+    "id":"FILTER_VALIDATE_INT",
+    "name": "FILTER_SANITIZE_STRING",
+    "password": "FILTER_SANITIZE_STRING"
+  },
   "pets":{
     "id":"FILTER_VALIDATE_INT",
     "species":"FILTER_SANITIZE_STRING",
