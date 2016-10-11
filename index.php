@@ -137,7 +137,7 @@ $http_method = $_SERVER['REQUEST_METHOD'];
 
 /************************ Routing ************************/
 if ($http_method=='POST' && $api_noun == 'login') {
-    $users = GET('users');
+    $users = get_api_data('users');
     $password = NULL;
     //Find user by username
     foreach ($users as $u) {
@@ -315,6 +315,9 @@ function POST($api_noun) {
  **/
 function GET($api_noun) {
 	global $id;
+    //Check authorization
+    if (!user_authorized('GET', $api_noun))
+        throw new Exception('Not authorized', 403);
 	$data = get_api_data($api_noun);
 	
 	if($id !== NULL) {
@@ -335,6 +338,9 @@ function GET($api_noun) {
  **/
 function PUT($api_noun) {
 	global $id, $storage;
+    //Check authorization
+    if (!user_authorized('PUT', $api_noun))
+        throw new Exception('Not authorized', 403);
 	if($id === NULL) {
 		throw new Exception("PUT - must specify `id`", 404);
 	}
@@ -371,6 +377,9 @@ function PUT($api_noun) {
  **/
 function DELETE($api_noun) {
 	global $id, $storage;
+    //Check authorization
+    if (!user_authorized('DELETE', $api_noun))
+        throw new Exception('Not authorized', 403);
 	if($id !== NULL) {
 		$api = $GLOBALS['api']->{$api_noun};
 		$data = get_api_data($api_noun);
