@@ -126,7 +126,9 @@ if(isset($pieces[1])) {
 }
 
 // HTTP verb
+session_start();
 $http_method = $_SERVER['REQUEST_METHOD'];
+print_r($_SESSION);
 
 
 /************************ Routing ************************/
@@ -142,14 +144,15 @@ if ($http_method=='POST' && $api_noun == 'login') {
     }
     if ($password!=NULL && $password==$_POST['password']) {
         //login was successful
-        session_start();
         $_SESSION['name'] = $_POST['name'];
         $data = 'Login successful';
     } else { //unsuccessful
         throw new Exception("Username and password do not match.", 403);
     }
 } else if ($http_method=='POST' && $api_noun == 'logout') {
-
+    session_unset();
+    session_destroy();
+    $data = 'Logout successful';
 }else if(function_exists($http_method)) { //Handle all other requests
 	$data = $http_method($api_noun);
 } else {
