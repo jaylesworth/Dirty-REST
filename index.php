@@ -125,8 +125,14 @@ if(isset($pieces[1])) {
 	}
 }
 
-// HTTP verb
+//Determine the user
 session_start();
+if (array_key_exists('name', $_SESSION))
+    $user = $_SESSION['name'];
+else
+    $user = 'anonymous';
+
+// HTTP verb
 $http_method = $_SERVER['REQUEST_METHOD'];
 
 /************************ Routing ************************/
@@ -176,7 +182,7 @@ send_output($data, $format);
 	 }
 	 
 	foreach($api as $key => $data_type) {
-		if(isset($data[$key]) and $key != 'id') {
+		if (isset($data[$key]) and $key != 'id' and $key!='owner') {
 			$new[$key] = filter_var(trim($data[$key]), constant($data_type));
 		}
 	}

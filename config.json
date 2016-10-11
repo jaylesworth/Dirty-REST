@@ -6,11 +6,13 @@
 
   "users":{
     "id":"FILTER_VALIDATE_INT",
+    "owner":["admin","private"],
     "name": "FILTER_SANITIZE_STRING",
     "password": "FILTER_SANITIZE_STRING"
   },
   "pets":{
     "id":"FILTER_VALIDATE_INT",
+    "owner":["user","protected"],
     "species":"FILTER_SANITIZE_STRING",
     "breed":"FILTER_SANITIZE_STRING",
     "age":"FILTER_VALIDATE_INT"
