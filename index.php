@@ -251,6 +251,24 @@ function get_id($data, $index) {
 	return $id;
 }
 
+/**
+  * Determines if the user is allowed to perfor a specific action based on the
+  * contents of $user and a give collection. Method is one of GET, POST, PUT,
+  * DELETE.
+  * Mode on a collection can be one of:
+  *  Public: Anyone can read/write
+  *  Protected: Anyone can read, but only owner can write
+  *  Private: Only owner can read/write
+  **/
+function user_authorized($method, $collection) {
+    global $user, $api;
+    $owner = $api->$collection->owner[0];
+    $mode = $api->$collection->owner[1];
+    if ($mode=='public') return true;
+    else if ($owner==$user) return true;
+    else if ($mode=='protected' && $method=='GET') return true;
+    else return false;
+}
 
 /************************ HTTP Methods ************************/
 
@@ -259,6 +277,9 @@ function get_id($data, $index) {
  **/
 function POST($api_noun) {
 	global $id, $storage;
+    //Check authorization
+    if (!user_authorized('POST', $api_noun))
+        throw new Exception('Not authorized', 403);
 	$api = $GLOBALS['api']->{$api_noun};
 	$data = get_api_data($api_noun);
 	
