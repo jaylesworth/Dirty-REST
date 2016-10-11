@@ -128,8 +128,6 @@ if(isset($pieces[1])) {
 // HTTP verb
 session_start();
 $http_method = $_SERVER['REQUEST_METHOD'];
-print_r($_SESSION);
-
 
 /************************ Routing ************************/
 if ($http_method=='POST' && $api_noun == 'login') {
